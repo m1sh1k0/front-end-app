@@ -69,6 +69,14 @@
         >
       </b-button-group>
     </b-modal>
+    <b-table
+      name="UsersTable"
+      striped
+      hover
+      :items="items"
+      @row-clicked="openUserPage"
+    >
+    </b-table>
   </div>
 </template>
 
@@ -90,6 +98,7 @@ export default {
   },
   data() {
     return {
+      items: [],
       buttonText: 'Create user',
       firstName: '',
       lastName: '',
@@ -98,6 +107,20 @@ export default {
     }
   },
   methods: {
+    openUserPage(item, index, event) {
+      console.log(item, index, event)
+      this.$router.push(`user/${item._id}`)
+    },
+    getAllUsers() {
+      this.axios.get('http://localhost:3000/users').then(
+        (result) => {
+          this.items = result.data
+        },
+        (error) => {
+          console.log(error)
+        }
+      )
+    },
     showModal() {
       this.$refs['create-user-modal'].show()
     },
@@ -129,7 +152,17 @@ export default {
       }
     }
   },
-  mounted() {}
+  mounted() {
+    this.axios.get('http://localhost:3000/users').then(
+      (result) => {
+        this.items = result.data
+        console.log(result.data)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
 }
 </script>
 
